@@ -1,8 +1,8 @@
 {
   "rewrites": [
     {
-      "source": "/api/(.*)",
-      "destination": "https://vercel.app"
+      "source": "/api/:path*",
+      "destination": "https://backend-git-main-uzezis-projects-d21532ab.vercel.app/api/:path*"
     },
     {
       "source": "/(.*)",
