@@ -5,27 +5,38 @@ import { ZodError } from 'zod';
 
 import { config } from './config.js';
 import { ensureBucket } from './services/storage.js';
-import accountRoutes from "./routes/account.js";
-import catalogRoutes from "./routes/catalog.js";
-import sellerRoutes from "./routes/seller.js"
-import orderRoutes from "./routes/orders.js";
-import stripeWebhook from "./routes/stripe-webhook.js";
+import accountRoutes from './routes/account.js';
+import catalogRoutes from './routes/catalog.js';
+import sellerRoutes from './routes/seller.js';
+import orderRoutes from './routes/orders.js';
+import stripeWebhook from './routes/stripe-webhook.js';
 import { stripeEnabled, stripeTestMode } from './services/stripe.js';
-import aiRoutes from "./routes/ai.js";
+import aiRoutes from './routes/ai.js';
 import { aiEnabled, aiModel } from './services/ai.js';
 
 const app = express();
 
-app.use(cors({ origin: config.clientOrigin, credentials: true }));
-app.use("/api/webhooks/stripe", stripeWebhook);
+const allowedOrigins = String(config.clientOrigin || '')
+  .split(',')
+  .map((o) => o.trim())
+  .filter(Boolean);
+
+app.use(
+  cors({
+    origin: allowedOrigins.length > 1 ? allowedOrigins : allowedOrigins[0] || true,
+    credentials: true,
+  }),
+);
+
+app.use('/api/webhooks/stripe', stripeWebhook);
 app.use(express.json({ limit: '1mb' }));
 
 app.get('/api/health', (_req, res) => res.json({ ok: true }));
-app.use("/api", accountRoutes);
-app.use("/api", catalogRoutes)
-app.use("/api/seller", sellerRoutes);
-app.use("/api", orderRoutes);
-app.use("/api/ai", aiRoutes)
+app.use('/api', accountRoutes);
+app.use('/api', catalogRoutes);
+app.use('/api/seller', sellerRoutes);
+app.use('/api', orderRoutes);
+app.use('/api/ai', aiRoutes);
 
 app.use('/api', (_req, res) => res.status(404).json({ error: 'Not found.' }));
 
@@ -49,19 +60,14 @@ app.use((err, _req, res, _next) => {
   res.status(500).json({ error: 'Something went wrong on our side. Try again in a moment.' });
 });
 
-try {
- await ensureBucket();    
-} catch (error) {
-    console.warn(`Could not verify storage bucket "${config.s3.bucket}": ${error.message}" `);
-}
-
-console.log(`AI: ${aiEnabled() ? `Gemini . ${aiModel()}` : 'heurestic fallback'}`);
-console.log(`Payments: ${stripeEnabled() ? `Stripe${stripeTestMode() ? ' (test mode)' : ''}${config.stripe.webhookSecret ? ' + webhook' : ''}` : 'demo provider'}`);
+ensureBucket().catch((error) => {
+  console.warn(`Could not verify storage bucket "${config.s3.bucket}": ${error.message}`);
+});
 
 if (!process.env.VERCEL) {
-  app.listen(config.port, () => {
-    console.log(`Facet-marketplace Api running on -> http://localhost:${config.port}`);
-  });
+  console.log(`AI: ${aiEnabled() ? `Gemini · ${aiModel()}` : 'heuristic fallback'}`);
+  console.log(`Payments: ${stripeEnabled() ? `Stripe${stripeTestMode() ? ' (test mode)' : ''}${config.stripe.webhookSecret ? ' + webhook' : ''}` : 'demo provider'}`);
+  app.listen(config.port, () => console.log(`Facet-marketplace Api running on -> http://localhost:${config.port}`));
 }
 
 export default app;
