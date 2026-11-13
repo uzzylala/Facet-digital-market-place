@@ -9,9 +9,10 @@ export class ApiError extends Error {
   }
 }
 
-// ── REAL ── uncomment when going live: calls the Express API through the Vite proxy
+// ── REAL ── uncomment when going live: calls the Express API through the Vite proxy or Vercel rewrite
 async function request(method, path, { body, form, params } = {}) {
-  const url = new URL(`/api/${path}`, window.location.origin);
+  const cleanPath = path.startsWith('/') ? path : `/${path}`;
+  const url = new URL(`/api${cleanPath}`, window.location.origin);
   Object.entries(params ?? {}).forEach(([k, v]) => {
     if (v !== undefined && v !== null && v !== '' && v !== false) url.searchParams.set(k, v);
   });
@@ -32,7 +33,6 @@ async function request(method, path, { body, form, params } = {}) {
   if (!res.ok) throw new ApiError(data?.error ?? `Request failed (${res.status})`, res.status, data);
   return data;
 }
-
 
 export const api = {
   get: (path, params) => request('GET', path, { params }),
