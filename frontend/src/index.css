@@ -1,0 +1,169 @@
+@import 'tailwindcss';
+
+/* ─────────────────────────────────────────────────────────────
+   Facet design tokens (v2)
+   A soft grey canvas, borderless white cards with big radii, a single
+   violet accent used as solid blocks, near-black contrast cards, and
+   large confident numerals in Inter Tight.
+   ───────────────────────────────────────────────────────────── */
+@theme {
+  --color-paper: #f1f1f4;
+  --color-surface: #ffffff;
+  --color-wash: #f5f5f8;
+  --color-ink: #15151c;
+  --color-ink-soft: #4a4a57;
+  --color-muted: #8b8b98;
+  --color-line: #ebebf0;
+  --color-line-strong: #dcdce4;
+  --color-night: #18181f;
+  --color-night-soft: #26262f;
+
+  --color-iris: #6a4cff;
+  --color-iris-deep: #4f30e6;
+  --color-lilac: #ece8ff;
+  --color-azure: #3d6bff;
+  --color-lagoon: #10b5a6;
+  --color-blush: #ff6fa8;
+  --color-amber: #f5b544;
+
+  --color-success: #179c5f;
+  --color-success-soft: #e3f6ec;
+  --color-warn: #b7791f;
+  --color-warn-soft: #fdf3e1;
+  --color-danger: #e5484d;
+  --color-danger-soft: #fdeced;
+
+  --font-display: 'Inter Tight', ui-sans-serif, system-ui, sans-serif;
+  --font-sans: 'Geist', ui-sans-serif, system-ui, sans-serif;
+  --font-mono: 'Geist Mono', ui-monospace, SFMono-Regular, monospace;
+
+  --radius-card: 1.75rem;
+  --radius-inner: 1.25rem;
+  --shadow-card: 0 1px 2px rgb(21 21 28 / 0.03), 0 10px 30px -18px rgb(21 21 28 / 0.12);
+  --shadow-lift: 0 2px 6px rgb(21 21 28 / 0.04), 0 28px 50px -24px rgb(21 21 28 / 0.22);
+  --shadow-glow: 0 12px 28px -12px rgb(106 76 255 / 0.65);
+  --shadow-pop: 0 1px 2px rgb(21 21 28 / 0.06), 0 8px 18px -8px rgb(21 21 28 / 0.14);
+
+  --animate-rise: rise 0.55s cubic-bezier(0.2, 0.7, 0.2, 1) both;
+
+  @keyframes rise {
+    from { opacity: 0; transform: translateY(10px); }
+    to { opacity: 1; transform: translateY(0); }
+  }
+}
+
+:root {
+  --gradient-brand: linear-gradient(135deg, #8a6dff 0%, #6a4cff 45%, #4f30e6 100%);
+  --gradient-soft: linear-gradient(135deg, #f3efff 0%, #e9f0ff 100%);
+  color-scheme: light;
+}
+
+@layer base {
+  html { -webkit-text-size-adjust: 100%; }
+  body {
+    @apply bg-paper text-ink font-sans antialiased;
+    font-feature-settings: 'cv11', 'ss01';
+  }
+  h1, h2, h3, h4 {
+    @apply font-display font-semibold text-ink;
+    letter-spacing: -0.03em;
+  }
+  ::selection { background: rgb(106 76 255 / 0.18); }
+  :focus-visible { outline: 2px solid var(--color-iris); outline-offset: 2px; border-radius: 10px; }
+}
+
+/* Shared button base; an @utility so the variants below can @apply it. */
+@utility btn {
+  @apply inline-flex items-center justify-center gap-2 whitespace-nowrap rounded-full px-5 py-2.5 text-sm font-medium
+    transition duration-200 disabled:cursor-not-allowed disabled:opacity-45;
+}
+
+@utility badge {
+  @apply inline-flex items-center gap-1 rounded-full px-2 py-0.5 text-[11px] font-semibold;
+}
+
+/* Diagonal hatching in the current text colour — used for tracks and inactive bars. */
+@utility hatch {
+  background-image: repeating-linear-gradient(135deg, currentColor 0 2px, transparent 2px 8px);
+}
+
+@layer components {
+  .container-page { @apply mx-auto w-full max-w-[1320px] px-4 sm:px-6 lg:px-8; }
+
+  /* Gradient emphasis for one word in a headline. */
+  .text-opal {
+    background: var(--gradient-brand);
+    -webkit-background-clip: text;
+    background-clip: text;
+    color: transparent;
+  }
+
+  /* Big numerals for stats and prices. */
+  .numeral { @apply font-display font-semibold tracking-[-0.04em] tabular-nums; }
+
+  .eyebrow { @apply text-[13px] font-medium text-muted; }
+
+  .card { @apply rounded-[var(--radius-card)] bg-surface shadow-[var(--shadow-card)]; }
+  .card-dark { @apply rounded-[var(--radius-card)] bg-night text-white; }
+  .card-brand { @apply rounded-[var(--radius-card)] text-white; background: var(--gradient-brand); }
+  .tile { @apply rounded-[var(--radius-inner)] bg-wash; }
+
+  /* Buttons — always use a variant (btn-primary, btn-ghost…), never bare `btn`. */
+  .btn-primary {
+    @apply btn text-white shadow-[var(--shadow-glow)] hover:-translate-y-px hover:brightness-110 active:translate-y-0;
+    background: var(--gradient-brand);
+  }
+  .btn-ink { @apply btn bg-night text-white hover:bg-night-soft; }
+  .btn-white { @apply btn bg-surface text-ink shadow-[var(--shadow-pop)] hover:bg-wash; }
+  .btn-ghost { @apply btn border border-line-strong bg-surface text-ink hover:border-ink/25 hover:bg-wash; }
+  .btn-quiet { @apply btn px-3.5 text-ink-soft hover:bg-wash hover:text-ink; }
+  .btn-sm { @apply px-3.5 py-1.5 text-[13px]; }
+  .btn-lg { @apply px-6 py-3.5 text-[15px]; }
+
+  /* Round icon button (header actions, card actions). */
+  .icon-btn {
+    @apply relative grid size-11 shrink-0 place-items-center rounded-full bg-surface text-ink-soft shadow-[var(--shadow-pop)]
+      transition hover:text-ink hover:shadow-[var(--shadow-lift)];
+  }
+
+  /* Form fields: filled, borderless until focused. */
+  .field-label { @apply mb-2 block text-[13px] font-medium text-ink-soft; }
+  .input {
+    @apply w-full rounded-2xl border border-transparent bg-wash px-4 py-3 text-sm text-ink placeholder:text-muted
+      transition outline-none focus:border-iris/50 focus:bg-surface focus:ring-4 focus:ring-iris/10;
+  }
+  .field-hint { @apply mt-1.5 text-xs text-muted; }
+
+  .chip {
+    @apply inline-flex items-center gap-1.5 rounded-full border border-line bg-surface px-3.5 py-1.5 text-[13px] text-ink-soft
+      transition hover:border-line-strong hover:text-ink;
+  }
+  .chip-active { @apply border-transparent bg-night text-white hover:text-white; }
+
+  /* Segmented pill group (nav, tabs, period switchers). */
+  .segmented { @apply inline-flex items-center gap-1 rounded-full bg-surface p-1 shadow-[var(--shadow-pop)]; }
+  .segment { @apply rounded-full px-4 py-2 text-sm font-medium text-ink-soft transition hover:text-ink; }
+  .segment-active { @apply bg-night text-white hover:text-white; }
+
+  .badge-up { @apply badge bg-success-soft text-success; }
+  .badge-down { @apply badge bg-danger-soft text-danger; }
+
+  .prose-facet { @apply text-[15px] leading-7 text-ink-soft; }
+  .prose-facet h2, .prose-facet h3 { @apply mt-7 mb-2 font-display text-lg font-semibold text-ink; }
+  .prose-facet p { @apply my-3; }
+  .prose-facet ul { @apply my-3 list-none space-y-2 pl-0; }
+  .prose-facet li { @apply relative pl-6; }
+  .prose-facet li::before { content: ''; @apply absolute left-1 top-[0.6em] size-2 rounded-full bg-iris; }
+  .prose-facet strong { @apply font-semibold text-ink; }
+  .prose-facet a { @apply text-iris underline underline-offset-2; }
+  .prose-facet code { @apply rounded-md bg-wash px-1.5 py-0.5 font-mono text-[13px] text-ink; }
+}
+
+@media (prefers-reduced-motion: reduce) {
+  *, *::before, *::after { animation-duration: 0.01ms !important; animation-iteration-count: 1 !important; transition-duration: 0.01ms !important; }
+}
+
+@media print {
+  .no-print { display: none !important; }
+  body { background: white; }
+}

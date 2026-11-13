@@ -1,0 +1,30 @@
+{
+  "name": "facet-api",
+  "version": "1.0.0",
+  "private": "true",
+  "description": "",
+  "license": "ISC",
+  "author": "uzezi onogomuho",
+  "type": "module",
+  "main": "src/server.js",
+  "scripts": {
+    "dev": "node --env-file=src/.env --watch --watch-path=./src --watch-path=./src/.env src/server.js",
+    "start": "node src/server.js",
+    "db:migrate": "node --env-file=src/.env src/db/migrate.js",
+    "db:seed": "node --env-file=src/.env src/db/seed.js"
+  },
+  "dependencies": {
+    "@aws-sdk/client-s3": "^3.1152.0",
+    "@aws-sdk/s3-request-presigner": "^3.1152.0",
+    "@google/genai": "^2.30.0",
+    "adm-zip": "^0.6.1",
+    "cors": "^2.8.6",
+    "dotenv": "^18.0.8",
+    "express": "^5.3.0",
+    "jose": "^6.2.12",
+    "multer": "^2.4.0",
+    "pg": "^8.23.1",
+    "stripe": "^23.0.0",
+    "zod": "^4.6.7"
+  }
+}
