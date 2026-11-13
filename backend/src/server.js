@@ -31,6 +31,7 @@ app.use(
 app.use('/api/webhooks/stripe', stripeWebhook);
 app.use(express.json({ limit: '1mb' }));
 
+app.get('/', (_req, res) => res.redirect(302, '/api/health'));
 app.get('/api/health', (_req, res) => res.json({ ok: true }));
 app.use('/api', accountRoutes);
 app.use('/api', catalogRoutes);
