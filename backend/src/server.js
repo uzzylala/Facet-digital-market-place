@@ -58,4 +58,10 @@ try {
 console.log(`AI: ${aiEnabled() ? `Gemini . ${aiModel()}` : 'heurestic fallback'}`);
 console.log(`Payments: ${stripeEnabled() ? `Stripe${stripeTestMode() ? ' (test mode)' : ''}${config.stripe.webhookSecret ? ' + webhook' : ''}` : 'demo provider'}`);
 
-app.listen(config.port, ()=> console.log(`Facet-marketplace Api running on -> http://localhost:${config.port}`));
+if (!process.env.VERCEL) {
+  app.listen(config.port, () => {
+    console.log(`Facet-marketplace Api running on -> http://localhost:${config.port}`);
+  });
+}
+
+export default app;
