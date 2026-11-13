@@ -162,6 +162,5 @@ npm run dev
 Open http://localhost:5173/
 
 - **Checkout** uses a demo card form: `4242 4242 4242 4242` succeeds and `4000 0000 0000 0002` is declined.
-- Your changes (purchases, wishlist, reviews, listings) are saved in the browser. To start over, run `resetMockData()` in the browser console.
 
 ```
