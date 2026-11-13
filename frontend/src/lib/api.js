@@ -11,7 +11,7 @@ export class ApiError extends Error {
 
 // ── REAL ── uncomment when going live: calls the Express API through the Vite proxy
 async function request(method, path, { body, form, params } = {}) {
-  const url = new URL(`/api${path}`, window.location.origin);
+  const url = new URL(`/api/${path}`, window.location.origin);
   Object.entries(params ?? {}).forEach(([k, v]) => {
     if (v !== undefined && v !== null && v !== '' && v !== false) url.searchParams.set(k, v);
   });
