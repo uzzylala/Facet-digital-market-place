@@ -3,7 +3,7 @@
   "rewrites": [
     {
       "source": "/api/(.*)",
-      "destination": "https://backend-git-main-uzezis-projects-d21532ab.vercel.app/api/$1"
+      "destination": "https://backend-gray-psi-59.vercel.app/api/$1"
     },
     {
       "source": "/(.*)",
