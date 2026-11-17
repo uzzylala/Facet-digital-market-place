@@ -80,6 +80,22 @@ export function OrderReceipt() {
     }
   }, [isNew, status, items, cart, qc]);
 
+  // Show payment spinner while the order is loading after Stripe redirects.
+if (order.isPending && sessionId) {
+  return (
+    <div className="container-page max-w-xl pt-16">
+      <div className="card p-10 text-center">
+        <Spinner className="mx-auto size-9" />
+        <h1 className="mt-5 text-3xl">Confirming your payment…</h1>
+        <p className="mt-2 text-ink-soft">
+          Checking with Stripe. This only takes a moment.
+        </p>
+      </div>
+    </div>
+  );
+}
+
+  
   if (order.isPending) return <PageLoader />;
   if (order.isError) return <div className="container-page pt-16"><ErrorState error={order.error} /></div>;
   const o = order.data;
